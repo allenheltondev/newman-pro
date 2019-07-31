@@ -1,14 +1,14 @@
 {
-  "name": "newman-live",
+  "name": "newman-pro",
   "version": "1.0.0",
   "description": "Newman Runner that uses the Postman-Pro api to pull the latest version of your collections and environments",
   "main": "index.js",
   "scripts": {
-    "test": "newman-live --api-key xxxxxxxx --collection-uid yyyyyy --environment-uid zzzzzzz"
+    "test": "newman-pro --api-key xxxxxxxx --collection-uid yyyyyy --environment-uid zzzzzzz"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/allenheltondev/newman-live.git"
+    "url": "git+https://github.com/allenheltondev/newman-pro.git"
   },
   "keywords": [
     "newman",
@@ -20,9 +20,9 @@
   "author": "Allen Helton",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/allenheltondev/newman-live/issues"
+    "url": "https://github.com/allenheltondev/newman-pro/issues"
   },
-  "homepage": "https://github.com/allenheltondev/newman-live#readme",
+  "homepage": "https://github.com/allenheltondev/newman-pro#readme",
   "dependencies": {
     "axios": "^0.19.0",
     "command-line-args": "^5.1.1",
