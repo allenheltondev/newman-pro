@@ -30,20 +30,20 @@ module.exports = {
       .catch(error => console.log(error));
   },
 
-  runNewman: function (apiKey, collectionUid, environmentUid) {
+  runNewman: function (apiKey, collectionUid, environmentUid, bail, reporter) {
     let response = getLatestFromPostman(apiKey, collectionUid, environmentUid);
     response.then(() => {
-      let params = buildNewmanParams(environmentUid);
+      let params = buildNewmanParams(environmentUid, bail, reporter);
 
       newman.run(params, function (err) {
         if (err) throw err;
 
         // Clean up the collection and environment json files
         fs.unlink(collectionFile, err => {
-          if(err) console.log("Unable to clean up " + collectionFile);
+          if (err) console.log("Unable to clean up " + collectionFile);
         });
         fs.unlink(environmentFile, err => {
-          if(err) console.log("Unable to clean up " + environmentFile)
+          if (err) console.log("Unable to clean up " + environmentFile)
         });
       });
     });
@@ -61,13 +61,15 @@ async function getLatestFromPostman(apiKey, collectionUid, environmentUid) {
   return Promise.all(promises);
 }
 
-function buildNewmanParams(hasEnvironmentUid) {
+function buildNewmanParams(hasEnvironmentUid, bail, reporter) {
   let params = {
     collection: collectionFile,
     reporters: 'cli'
   };
 
   if (hasEnvironmentUid) params.environment = environmentFile;
+  if (bail) params.bail = bail;
+  if (reporter) params.reporters = reporter;
 
   return params;
 }

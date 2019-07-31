@@ -26,12 +26,12 @@ function executeOperation(options, collectionUid) {
   if (options["environment-name"]) {
     let envRes = postman.getEnvironmentUid(options["api-key"], options["environment-name"]);
     envRes.then(envUid => {
-      postman.runNewman(options["api-key"], collectionUid, envUid);
+      postman.runNewman(options["api-key"], collectionUid, envUid, options.bail, options.reporter);
     })
       .catch(err => console.log("Unable to acquire Environment Uid."));
   }
   else {
-    postman.runNewman(options["api-key"], collectionUid, options["environment-uid"]);
+    postman.runNewman(options["api-key"], collectionUid, options["environment-uid"], options.bail, options.reporter);
   }
 }
 

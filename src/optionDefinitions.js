@@ -6,6 +6,8 @@ const optionDefinitions = [
   { name: 'collection-name', alias: 'c', type: String },
   { name: 'environment-name', alias: 'e', type: String },
   { name: 'set-api-key', type: String },
-  { name: 'clear-api-key', type: Boolean }
+  { name: 'clear-api-key', type: Boolean },
+  { name: 'bail', alias: 'b', type: Boolean },
+  { name: 'reporter', alias: 'r', type: String }
 ];
 module.exports = optionDefinitions;
