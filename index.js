@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
-let postman = require('./postmanHandler');
-let optionDefinitions = require('./optionDefinitions');
-let settings = require('./settingsHandler');
+let postman = require('./src/postmanHandler');
+let optionDefinitions = require('./src/optionDefinitions');
+let settings = require('./src/settingsHandler');
 const commandLineArgs = require('command-line-args');
 const options = commandLineArgs(optionDefinitions);
 
