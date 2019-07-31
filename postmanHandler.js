@@ -2,6 +2,9 @@
 let fs = require('fs');
 let axios = require('axios');
 let newman = require('newman');
+const collectionFile = 'collection.json';
+const environmentFile = 'environment.json';
+
 module.exports = {
   getCollectionUid: function (apiKey, collectionName) {
     return axios.get('https://api.getpostman.com/collections', { headers: { 'X-Api-Key': apiKey } })
@@ -34,6 +37,14 @@ module.exports = {
 
       newman.run(params, function (err) {
         if (err) throw err;
+
+        // Clean up the collection and environment json files
+        fs.unlink(collectionFile, err => {
+          if(err) console.log("Unable to clean up " + collectionFile);
+        });
+        fs.unlink(environmentFile, err => {
+          if(err) console.log("Unable to clean up " + environmentFile)
+        });
       });
     });
   }
@@ -41,10 +52,10 @@ module.exports = {
 
 async function getLatestFromPostman(apiKey, collectionUid, environmentUid) {
   let promises = [];
-  promises.push(downloadPostmanJson(apiKey, "collections", collectionUid, "collection.json"));
+  promises.push(downloadPostmanJson(apiKey, "collections", collectionUid, collectionFile));
 
   if (environmentUid) {
-    promises.push(downloadPostmanJson(apiKey, "environments", environmentUid, "environment.json"));
+    promises.push(downloadPostmanJson(apiKey, "environments", environmentUid, environmentFile));
   }
 
   return Promise.all(promises);
@@ -52,11 +63,11 @@ async function getLatestFromPostman(apiKey, collectionUid, environmentUid) {
 
 function buildNewmanParams(hasEnvironmentUid) {
   let params = {
-    collection: './collection.json',
+    collection: collectionFile,
     reporters: 'cli'
   };
 
-  if (hasEnvironmentUid) params.environment = './environment.json';
+  if (hasEnvironmentUid) params.environment = environmentFile;
 
   return params;
 }
