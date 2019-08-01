@@ -39,12 +39,7 @@ module.exports = {
         if (err) throw err;
 
         // Clean up the collection and environment json files
-        fs.unlink(collectionFile, err => {
-          if (err) console.log("Unable to clean up " + collectionFile);
-        });
-        fs.unlink(environmentFile, err => {
-          if (err) console.log("Unable to clean up " + environmentFile)
-        });
+       cleanUpJsonFiles();
       });
     });
   }
@@ -110,3 +105,13 @@ async function loadEnvironmentFromPostman(apiKey, environmentName) {
     .catch(error => console.log(error));
 }
 
+function cleanUpJsonFiles(){
+  fs.unlink(collectionFile, err => {
+    if (err) console.log("Unable to clean up " + collectionFile);
+  });
+  if (fs.existsSync(environmentFile)) {
+    fs.unlink(environmentFile, err => {
+      if (err) console.log("Unable to clean up " + environmentFile)
+    });
+  }
+}

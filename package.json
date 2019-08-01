@@ -19,6 +19,9 @@
   ],
   "author": "Allen Helton",
   "license": "MIT",
+  "bin": {
+    "newman-pro": "./cli.js"
+  },
   "bugs": {
     "url": "https://github.com/allenheltondev/newman-pro/issues"
   },
