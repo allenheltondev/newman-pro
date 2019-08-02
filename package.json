@@ -1,6 +1,6 @@
 {
   "name": "newman-pro",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Newman Runner that uses the Postman-Pro api to pull the latest version of your collections and environments",
   "main": "index.js",
   "scripts": {
