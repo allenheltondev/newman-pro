@@ -3,7 +3,9 @@
   "version": "1.1.0",
   "description": "Newman Runner that uses the Postman-Pro api to pull the latest version of your collections and environments",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "jest"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/allenheltondev/newman-pro.git"
@@ -28,5 +30,9 @@
     "axios": "^0.19.0",
     "command-line-args": "^5.1.1",
     "newman": "^4.5.1"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.5",
+    "jest": "^24.8.0"
   }
 }

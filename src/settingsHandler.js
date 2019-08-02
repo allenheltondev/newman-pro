@@ -7,6 +7,7 @@ module.exports = {
     let settings = {};
     settings.apiKey = apiKey;
     fs.writeFileSync(settingsFile, JSON.stringify(settings));
+    return true;    
   },
 
   getApiKey: function () {
@@ -20,6 +21,8 @@ module.exports = {
   clearApiKey: function(){
     if(fs.existsSync(settingsFile)){
       fs.unlinkSync(settingsFile);
+      return true;
     }
+    return false;
   }
 };
