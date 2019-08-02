@@ -12,12 +12,15 @@ let postman = require('./src/postmanHandler');
 let optionDefinitions = require('./src/optionDefinitions');
 const commandLineArgs = require('command-line-args');
 const options = commandLineArgs(optionDefinitions);
+const readline = require('readline-sync');
 
 function newmanpro() {
 
   'use strict';
 
   handleApiSetting(options);
+  if(handleViewOnlyTasks(options))
+    return;
   validateParameters(options);
 
 
@@ -55,8 +58,6 @@ function executeOperation(options, collectionUid) {
 }
 
 function handleApiSetting(options) {
-
-
   if (options["set-api-key"]) {
     settings.setApiKey(options["set-api-key"]);
     console.log('Api key has been saved.');
@@ -71,7 +72,32 @@ function handleApiSetting(options) {
 }
 
 function validateParameters(options) {
-  // Validate an api key has been specied
+  // Validate an api key has been specified
+  configureApiKey(options);
+
+  // Validate a collection uid or name has been specified
+  if (!options["collection-name"] && !options["collection-uid"]) {
+    console.log("A collection name or uid is required.");
+    process.exit(1);
+  }
+}
+
+function handleViewOnlyTasks(options){
+  if(options["list-collections"]){
+    configureApiKey(options);
+    let response = postman.listCollections(options["api-key"]);
+    response.then(collections =>{      
+      let index = readline.keyInSelect(collections, 'Which collection would you like to run?');
+      console.log(index);
+      console.log(collections[index].uid);
+      executeOperation(options, collections[index].uid);
+    });
+    return true;
+  }
+  return false;
+}
+
+function configureApiKey(options){
   if (!options["api-key"]) {
     let apiKey = settings.getApiKey();
     if (!apiKey) {
@@ -81,12 +107,6 @@ function validateParameters(options) {
     else {
       options["api-key"] = apiKey;
     }
-  }
-
-  // Validate a collection uid or name has been specified
-  if (!options["collection-name"] && !options["collection-uid"]) {
-    console.log("A collection name or uid is required.");
-    process.exit(1);
   }
 }
 

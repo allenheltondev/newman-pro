@@ -8,6 +8,7 @@ const optionDefinitions = [
   { name: 'set-api-key', type: String },
   { name: 'clear-api-key', type: Boolean },
   { name: 'bail', alias: 'b', type: Boolean },
-  { name: 'reporter', alias: 'r', type: String }
+  { name: 'reporter', alias: 'r', type: String },
+  { name: 'list-collections', type: Boolean }
 ];
 module.exports = optionDefinitions;

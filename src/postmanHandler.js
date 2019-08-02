@@ -42,6 +42,17 @@ module.exports = {
        cleanUpJsonFiles();
       });
     });
+  },
+
+  listCollections: function(apiKey){
+    return axios.get('https://api.getpostman.com/collections', { headers: { 'X-Api-Key': apiKey } })
+      .then(res => {
+        let collections = [];
+        for(i = 0; i < res.data.collections.length; i++){
+          collections.push(res.data.collections[i].name);
+        }
+        return collections;
+      });
   }
 };
 
@@ -74,35 +85,6 @@ async function downloadPostmanJson(apiKey, method, identifier, fileName) {
   fs.writeFileSync(fileName, JSON.stringify(response.data), (err) => {
     if (err) console.log("Unable to store create '" + fileName + "' locally.");
   });
-}
-
-async function loadCollectionFromPostman(apiKey, collectionName) {
-  let getPromise = axios.get('https://api.getpostman.com/collections', { headers: { 'X-Api-Key': apiKey } });
-  let collectionIdPromise = getPromise.then(response => {
-    let uid;
-    let collection = response.data.collections.find(col => col.name == collectionName);
-    if (collection) uid = collection.uid;
-
-    return uid;
-  })
-    .catch(error => console.log(error));
-
-  return collectionIdPromise;
-}
-
-async function loadEnvironmentFromPostman(apiKey, environmentName) {
-  axios.get('https://api.getpostman.com/environments', { headers: { 'X-Api-Key': apiKey } })
-    .then(response => {
-      let uid;
-      let environment = response.data.environments.find(env => env.name == environmentName);
-      if (environment) uid = environment.uid;
-      let executionData = fs.readFileSync("execution.json");
-      let execution = JSON.parse(executionData);
-      execution.collectionUid = uid;
-      fs.writeFileSync("execution.json", execution);
-      return uid;
-    })
-    .catch(error => console.log(error));
 }
 
 function cleanUpJsonFiles(){
