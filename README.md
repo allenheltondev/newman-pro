@@ -4,7 +4,7 @@
 Newman Runner is a CLI tool that uses the Postman-Pro api to pull the latest version of your collections and environments and run your newman tests.
 
 ## Requirements
-You must have a valid Postman Pro license and an [integration api key](https://tyler-cloud-project.postman.co/integrations/services/pm_pro_api/).
+You must have a valid Postman Pro license and an [integration api key](https://app.getpostman.com/dashboard/integrations?_ga=2.127832718.2036488957.1564752384-1367148101.1555356432/).
 
 ## Usage
 The following command line arguments are available for use:
@@ -20,10 +20,12 @@ The following command line arguments are available for use:
 |bail            |b      |Abort newman at first test failure|
 |reporter        |r      |The type of reporter to build the newman results in|
 
+Arguments are denoted with --, aliases are used with -.
+
 ## Examples
 Run newman-pro for a single collection
 ```
-newman-pro --api-key XXXXXXXXXXX -collection-name "Integration Tests"
+newman-pro --api-key XXXXXXXXXXX --collection-name "Integration Tests"
 ```
 
 Set the Api key and run multiple collections
