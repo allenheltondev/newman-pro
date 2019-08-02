@@ -47,11 +47,7 @@ module.exports = {
   listCollections: function(apiKey){
     return axios.get('https://api.getpostman.com/collections', { headers: { 'X-Api-Key': apiKey } })
       .then(res => {
-        let collections = [];
-        for(i = 0; i < res.data.collections.length; i++){
-          collections.push(res.data.collections[i].name);
-        }
-        return collections;
+        return res.data.collections;        
       });
   }
 };

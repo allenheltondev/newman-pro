@@ -86,10 +86,14 @@ function handleViewOnlyTasks(options){
   if(options["list-collections"]){
     configureApiKey(options);
     let response = postman.listCollections(options["api-key"]);
-    response.then(collections =>{      
-      let index = readline.keyInSelect(collections, 'Which collection would you like to run?');
-      console.log(index);
-      console.log(collections[index].uid);
+    response.then(collections =>{ 
+      let collectionNames = [];
+        for(i = 0; i < collections.length; i++){
+          collectionNames.push(collections[i].name);
+        }  
+      let index = readline.keyInSelect(collectionNames, 'Which collection would you like to run?');
+      if(index == -1) process.exit();
+
       executeOperation(options, collections[index].uid);
     });
     return true;
