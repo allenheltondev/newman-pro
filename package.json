@@ -4,7 +4,6 @@
   "description": "Newman Runner that uses the Postman-Pro api to pull the latest version of your collections and environments",
   "main": "index.js",
   "scripts": {
-    "test": "newman-pro --api-key xxxxxxxx --collection-uid yyyyyy --environment-uid zzzzzzz"
   },
   "repository": {
     "type": "git",
