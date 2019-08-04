@@ -154,7 +154,8 @@ function isHelp(options) {
   if (!options.help)
     return false;
   
-  optionDefinitions.showHelp();
+  let helpText = optionDefinitions.showHelp();
+  console.log(helpText);
   return true;
 }
 

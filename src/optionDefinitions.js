@@ -108,7 +108,7 @@ module.exports = {
       }
     ]
     const usage = commandLineUsage(sections)
-    console.log(usage)
+    return usage;
   }
 }; 
 

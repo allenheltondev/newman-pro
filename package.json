@@ -4,7 +4,8 @@
   "description": "Newman Runner that uses the Postman-Pro api to pull the latest version of your collections and environments",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage --coverageReporters=text-lcov | coveralls"
+    "test": "jest --coverage --coverageReporters=text-lcov | coveralls",
+    "local-test": "jest --coverage"
   },
   "repository": {
     "type": "git",
