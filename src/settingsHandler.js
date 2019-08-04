@@ -24,5 +24,20 @@ module.exports = {
       return true;
     }
     return false;
+  },
+
+  showApiKey: function () {
+    if (fs.existsSync(settingsFile)) {
+      let settingsData = fs.readFileSync(settingsFile);
+      let settings = JSON.parse(settingsData);
+      let key = "";
+      for (i = 0; i < settings.apiKey.length; i++){
+        if (i <= (settings.apiKey.length - 5))
+          key += "X";
+        else
+          key += settings.apiKey[i];
+      }
+      return key;
+    }
   }
 };

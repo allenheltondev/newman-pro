@@ -11,18 +11,26 @@ let settings = require('./src/settingsHandler');
 let postman = require('./src/postmanHandler');
 let optionDefinitions = require('./src/optionDefinitions');
 const commandLineArgs = require('command-line-args');
-const options = commandLineArgs(optionDefinitions);
+const options = commandLineArgs(optionDefinitions.definitions);
 const readline = require('readline-sync');
 
 function newmanpro() {
 
   'use strict';
-
-  handleApiSetting(options);
-  if(handleViewOnlyTasks(options))
+  if (isHelp(options))
     return;
-  validateParameters(options);
+  
+  if (isApiKeyOperation(options))
+    return;
 
+  if (isWalkthroughMode(options))
+    return;
+
+  runNewman(options);
+}
+
+function runNewman(options) {
+  validateParameters(options);
 
   if (options["collection-name"]) {
     let colRes = postman.getCollectionUid(options["api-key"], options["collection-name"]);
@@ -57,18 +65,26 @@ function executeOperation(options, collectionUid) {
   }
 }
 
-function handleApiSetting(options) {
+function isApiKeyOperation(options) {
   if (options["set-api-key"]) {
     settings.setApiKey(options["set-api-key"]);
     console.log('Api key has been saved.');
-    process.exit();
+    return true;
   }
 
   if (options["clear-api-key"]) {
     settings.clearApiKey();
     console.log('Api key has been cleared.');
-    process.exit();
+    return true;
   }
+
+  if (options["show-api-key"]) {
+    let key = settings.showApiKey();
+    console.log(key);
+    return true;
+  }
+
+  return false;
 }
 
 function validateParameters(options) {
@@ -82,26 +98,46 @@ function validateParameters(options) {
   }
 }
 
-function handleViewOnlyTasks(options){
-  if(options["list-collections"]){
-    configureApiKey(options);
-    let response = postman.listCollections(options["api-key"]);
-    response.then(collections =>{ 
-      let collectionNames = [];
-        for(i = 0; i < collections.length; i++){
-          collectionNames.push(collections[i].name);
-        }  
-      let index = readline.keyInSelect(collectionNames, 'Which collection would you like to run?');
-      if(index == -1) process.exit();
+function isWalkthroughMode(options) {
+  if (!options["list-collections"])
+    return false;
 
+  configureApiKey(options);
+  let response = postman.listCollections(options["api-key"]);
+  response.then(collections => {
+    let collectionNames = [];
+    for (i = 0; i < collections.length; i++) {
+      collectionNames.push(collections[i].name);
+    }
+    let index = readline.keyInSelect(collectionNames, 'Which collection would you like to run?');
+    if (index == -1) process.exit();
+
+    let chooseEnv = readline.keyInYNStrict("Run in specific environment?");
+    if (chooseEnv) {
+      let res = postman.listEnvironments(options["api-key"]);
+      res.then(environments => {
+        let envNames = [];
+        for (j = 0; j < environments.length; j++) {
+          envNames.push(environments[j].name);
+        }
+        let envIndex = readline.keyInSelect(envNames, 'Which environment would you like to use?');
+        if (envIndex > -1)
+          options["environment-uid"] = environments[envIndex].uid;
+        
+        executeOperation(options, collections[index].uid)
+      })
+        .catch(err => console.log("Unable to load environments."));     
+    }
+    else {
       executeOperation(options, collections[index].uid);
-    });
-    return true;
-  }
-  return false;
+    }
+  })
+    .catch(err => console.log("Unable to load collections. Make sure Api key is valid."));
+  
+  return true;
 }
 
-function configureApiKey(options){
+function configureApiKey(options) {
   if (!options["api-key"]) {
     let apiKey = settings.getApiKey();
     if (!apiKey) {
@@ -112,6 +148,14 @@ function configureApiKey(options){
       options["api-key"] = apiKey;
     }
   }
+}
+
+function isHelp(options) {
+  if (!options.help)
+    return false;
+  
+  optionDefinitions.showHelp();
+  return true;
 }
 
 module.exports = newmanpro;

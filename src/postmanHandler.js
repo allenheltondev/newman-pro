@@ -49,6 +49,13 @@ module.exports = {
       .then(res => {
         return res.data.collections;        
       });
+  },
+
+  listEnvironments: function (apiKey) {
+    return axios.get('https://api.getpostman.com/environments', { headers: { 'X-Api-Key': apiKey } })
+    .then(res => {
+      return res.data.environments;        
+    });
   }
 };
 

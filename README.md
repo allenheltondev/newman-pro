@@ -12,6 +12,7 @@ The following command line arguments are available for use:
 |----------------|-------|------------|
 |api-key         |a      |Set the Postman Pro api key for a single invocation|
 |set-api-key     |       |Set the Postman Pro api key permanently|
+|show-api-key    |       |Show the last 4 letters of the saved api key|
 |clear-api-key   |       |Clear the saved Postman Pro api key|
 |collection-name |c      |Name of the collection to run|
 |environment-name|e      |Name of the environment in which to run the collection|
@@ -19,6 +20,7 @@ The following command line arguments are available for use:
 |environment-uid |       |Uid of the environment in which to run the collection|
 |bail            |b      |Abort newman at first test failure|
 |reporter        |r      |The type of reporter to build the newman results in|
+|list-collections|       |Lists all collections associated to the Postman account, and allows the user to select one to run|
 
 Arguments are denoted with --, aliases are used with -.
 
