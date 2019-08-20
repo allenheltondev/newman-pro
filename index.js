@@ -14,9 +14,26 @@ const commandLineArgs = require('command-line-args');
 const options = commandLineArgs(optionDefinitions.definitions);
 const readline = require('readline-sync');
 
-function newmanpro() {
+// Function variables
+let apiKey;
+let collectionName;
+let environmentName;
 
+function newmanpro(key, collection, environment){
+  apiKey = key;
+  collectionName= collection;
+  environmentName = environment;
+  
+  runNewman(options);
+}
+
+function newmanpro() {
   'use strict';
+
+  apiKey = options["api-key"];
+  collectionName = options["collection-name"];
+  environmentName = options["environment-name"];
+  
   if (isHelp(options))
     return;
   
@@ -32,11 +49,11 @@ function newmanpro() {
 function runNewman(options) {
   validateParameters(options);
 
-  if (options["collection-name"]) {
-    let colRes = postman.getCollectionUid(options["api-key"], options["collection-name"]);
+  if (collectionName) {
+    let colRes = postman.getCollectionUid(apiKey, collectionName);
     colRes.then(colUid => {
       if (!colUid) {
-        console.log(`Could not find collection with the name '${options["collection-name"]}'`);
+        console.log(`Could not find collection with the name '${collectionName}'`);
         process.exit(1);
       }
       executeOperation(options, colUid);
@@ -49,19 +66,19 @@ function runNewman(options) {
 }
 
 function executeOperation(options, collectionUid) {
-  if (options["environment-name"]) {
-    let envRes = postman.getEnvironmentUid(options["api-key"], options["environment-name"]);
+  if (environmentName) {
+    let envRes = postman.getEnvironmentUid(apiKey, environmentName);
     envRes.then(envUid => {
       if (!envUid) {
-        console.log(`Could not find environment with the name '${options["environment-name"]}'`);
+        console.log(`Could not find environment with the name '${environmentName}'`);
         process.exit(1);
       }
-      postman.runNewman(options["api-key"], collectionUid, envUid, options.bail, options.reporter);
+      postman.runNewman(apiKey, collectionUid, envUid, options.bail, options.reporter);
     })
       .catch(err => console.log("Unable to acquire Environment Uid."));
   }
   else {
-    postman.runNewman(options["api-key"], collectionUid, options["environment-uid"], options.bail, options.reporter);
+    postman.runNewman(apiKey, collectionUid, options["environment-uid"], options.bail, options.reporter);
   }
 }
 
@@ -89,10 +106,10 @@ function isApiKeyOperation(options) {
 
 function validateParameters(options) {
   // Validate an api key has been specified
-  configureApiKey(options);
+  configureApiKey();
 
   // Validate a collection uid or name has been specified
-  if (!options["collection-name"] && !options["collection-uid"]) {
+  if (!collectionName && !options["collection-uid"]) {
     console.log("A collection name or uid is required.");
     process.exit(1);
   }
@@ -102,8 +119,8 @@ function isWalkthroughMode(options) {
   if (!options["list-collections"])
     return false;
 
-  configureApiKey(options);
-  let response = postman.listCollections(options["api-key"]);
+  configureApiKey();
+  let response = postman.listCollections(apiKey);
   response.then(collections => {
     let collectionNames = [];
     for (i = 0; i < collections.length; i++) {
@@ -114,7 +131,7 @@ function isWalkthroughMode(options) {
 
     let chooseEnv = readline.keyInYNStrict("Run in specific environment?");
     if (chooseEnv) {
-      let res = postman.listEnvironments(options["api-key"]);
+      let res = postman.listEnvironments(apiKey);
       res.then(environments => {
         let envNames = [];
         for (j = 0; j < environments.length; j++) {
@@ -137,15 +154,15 @@ function isWalkthroughMode(options) {
   return true;
 }
 
-function configureApiKey(options) {
-  if (!options["api-key"]) {
-    let apiKey = settings.getApiKey();
-    if (!apiKey) {
+function configureApiKey() {
+  if (!apiKey) {
+    let savedApiKey = settings.getApiKey();
+    if (!savedApiKey) {
       console.log("You must pass in a valid api key.");
       process.exit(1);
     }
     else {
-      options["api-key"] = apiKey;
+      apiKey = savedApiKey;
     }
   }
 }
