@@ -15,11 +15,11 @@ const options = commandLineArgs(optionDefinitions.definitions);
 const readline = require('readline-sync');
 
 // Function variables
-let apiKey;
-let collectionName;
-let environmentName;
+var apiKey;
+var collectionName;
+var environmentName;
 
-function newmanpro(key, collection, environment){
+function run(key, collection, environment){
   apiKey = key;
   collectionName= collection;
   environmentName = environment;
@@ -33,7 +33,6 @@ function newmanpro() {
   apiKey = options["api-key"];
   collectionName = options["collection-name"];
   environmentName = options["environment-name"];
-  
   if (isHelp(options))
     return;
   
@@ -176,4 +175,4 @@ function isHelp(options) {
   return true;
 }
 
-module.exports = newmanpro;
+module.exports = {newmanpro, run};
